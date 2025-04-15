@@ -135,17 +135,17 @@ function ShopService:new(terminalName)
     end
 
     function obj:depositMoney(nick, count)
-    -- Пытаемся взять 'count' железных слитков из ME
     local countOfMoney = itemUtils.takeItem("minecraft:iron_ingot", 0, count)
     if (countOfMoney > 0) then
         local playerData = self:getPlayerData(nick)
-        -- Каждая единица железа = 1 монета
+        print("Баланс до пополнения: " .. tostring(playerData.balance))
         playerData.balance = playerData.balance + countOfMoney
+        print("Баланс после пополнения: " .. tostring(playerData.balance))
         self.db:insert(nick, playerData)
         printD(terminalName .. ": Игрок " .. nick .. " пополнил баланс на " .. countOfMoney .. " монет. Текущий баланс " .. playerData.balance)
         return playerData.balance, "Баланс пополнен на " .. countOfMoney .. " монет"
     end
-    return 0, "Недостаточно железных слитков в инвентаре!"
+    return 0, "У тебя пустой карман(!"
 end
 
     function obj:withdrawMoney(nick, count)
