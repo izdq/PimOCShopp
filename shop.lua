@@ -67,7 +67,7 @@ function createAutorizationForm()
     AutorizationForm.border = 1
     local autorizationLabel = AutorizationForm:addLabel(23, 14, "Что б авторизаватся встаньте на PIM");
 
-    local authorLabel = AutorizationForm:addLabel(32, 25, " Автор: 3_1415926535 ")
+    local authorLabel = AutorizationForm:addLabel(32, 25, " Автор: Подарок от 3_14:* ")
     authorLabel.fontColor = 0x00FDFF
 
     local nameLabel1 = AutorizationForm:addLabel(11, 3, " _                               _    _____ _                 ")
@@ -93,7 +93,7 @@ function createListForm(name, label, items, buttons, filter)
     shopFrame.H = 18
     local shopNameLabel = ShopForm:addLabel(33, 1, " Legend Shop ")
     shopNameLabel.fontColor = 0x00FDFF
-    local authorLabel = ShopForm:addLabel(32, 25, " Автор: 3_1415926535 ")
+    local authorLabel = ShopForm:addLabel(32, 25, " Автор: Подарок от 3_14:* ")
     authorLabel.fontColor = 0x00FDFF
 
     local shopNameLabel = ShopForm:addLabel(35, 4, name)
@@ -186,9 +186,9 @@ end
 function createMainForm(nick)
     local MainForm = forms.addForm()
     MainForm.border = 1
-    local shopNameLabel = MainForm:addLabel(33, 1, " Legend Shop ")
+    local shopNameLabel = MainForm:addLabel(33, 1, " izd ")
     shopNameLabel.fontColor = 0x00FDFF
-    local authorLabel = MainForm:addLabel(32, 25, " Автор: 3_1415926535 ")
+    local authorLabel = MainForm:addLabel(32, 25, " Автор: Подарок от 3_14:* ")
     authorLabel.fontColor = 0x00FDFF
 
     local frameBalance = MainForm:addFrame(3, 3, 1)
@@ -292,9 +292,9 @@ end
 function createSellShopForm()
     SellShopForm = forms.addForm()
     SellShopForm.border = 1
-    local shopNameLabel = SellShopForm:addLabel(33, 1, " Legend Shop ")
+    local shopNameLabel = SellShopForm:addLabel(33, 1, " izd ")
     shopNameLabel.fontColor = 0x00FDFF
-    local authorLabel = SellShopForm:addLabel(32, 25, " Автор: 3_1415926535 ")
+    local authorLabel = SellShopForm:addLabel(32, 25, " Автор: Подарок от: 3_14:* ")
     authorLabel.fontColor = 0x00FDFF
 
     local buyButton2 = SellShopForm:addLabel(23, 3, " █▀▀█ █▀▀█ █ █ █  █ █▀▀█ █ █ █▀▀█ ")
