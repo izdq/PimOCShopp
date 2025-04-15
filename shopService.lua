@@ -16,7 +16,6 @@ end
 
 local function printD(...) end
 
-
 local function readObjectFromFile(path)
     local file, err = io.open(path, "r")
     if not file then
@@ -32,17 +31,17 @@ local function readObjectFromFile(path)
     end
   
     return obj
-  end
+end
 
 function ShopService:new(terminalName)
     local obj = {}
 
     function obj:init()
-
         self.telegramLoggers = {
-        telegramLog_buy = telegramLog_buy, 
-        telegramLog_sell = telegramLog_sell, 
-        telegramLog_OreExchange = telegramLog_OreExchange }
+            telegramLog_buy = telegramLog_buy, 
+            telegramLog_sell = telegramLog_sell, 
+            telegramLog_OreExchange = telegramLog_OreExchange
+        }
 
         self.oreExchangeList = readObjectFromFile("/home/config/oreExchanger.cfg")
         self.exchangeList = readObjectFromFile("/home/config/exchanger.cfg")
@@ -82,12 +81,9 @@ function ShopService:new(terminalName)
         return self.oreExchangeList
     end
 
-
-
     function obj:getExchangeList()
         return self.exchangeList
     end
-
 
     function obj:getSellShopList(category)
         local categorySellShopList = {}
@@ -138,7 +134,6 @@ function ShopService:new(terminalName)
         local countOfMoney = itemUtils.takeMoney(count)
         if (countOfMoney > 0) then
             local playerData = self:getPlayerData(nick)
-
             playerData.balance = playerData.balance + countOfMoney
             self.db:insert(nick, playerData)
             printD(terminalName .. ": Игрок " .. nick .. " пополнил баланс на " .. countOfMoney .. " Текущий баланс " .. playerData.balance)
@@ -149,7 +144,6 @@ function ShopService:new(terminalName)
 
     function obj:withdrawMoney(nick, count)
         local playerData = self:getPlayerData(nick)
-
         if (playerData.balance < count) then
             return 0, "Не хватает денег на счету"
         end
@@ -206,12 +200,10 @@ function ShopService:new(terminalName)
 
     function obj:sellItem(nick, itemCfg, count)
         local playerData = self:getPlayerData(nick)
-
         if (playerData.balance < count * itemCfg.price) then
             return false, "Не хватает денег на счету"
         end
         local itemsCount = itemUtils.giveItem(itemCfg.id, itemCfg.dmg, count, itemCfg.nbt)
-
         if (itemsCount > 0) then
             playerData.balance = playerData.balance - itemsCount * itemCfg.price
             self.db:update(nick, playerData)
@@ -220,12 +212,9 @@ function ShopService:new(terminalName)
         return itemsCount, "Куплено " .. itemsCount .. " предметов!"
     end
 
-
     function obj:buyItem(nick, itemCfg, count)
         local playerData = self:getPlayerData(nick)
-
         local itemsCount = itemUtils.takeItem(itemCfg.id, itemCfg.dmg, count)
-
         if (itemsCount > 0) then
             playerData.balance = playerData.balance + itemsCount * itemCfg.price
             self.db:update(nick, playerData)
@@ -274,7 +263,6 @@ function ShopService:new(terminalName)
             table.insert(items, item)
         end
         local itemsTaken = itemUtils.takeItems(items)
-
         local playerData = self:getPlayerData(nick)
         local sum = 0
         for i, item in pairs(itemsTaken) do
@@ -396,6 +384,19 @@ function ShopService:new(terminalName)
             end
         end
         return 0, "Нету вещей в инвентаре!"
+    end
+
+    -- Новая функция: пополнение баланса через железо (1 железо = 1 монета)
+    function obj:depositIron(nick, count)
+        local countOfIron = itemUtils.takeItem("iron", 0, count)
+        if (countOfIron > 0) then
+            local playerData = self:getPlayerData(nick)
+            playerData.balance = playerData.balance + countOfIron
+            self.db:insert(nick, playerData)
+            printD(terminalName .. ": Игрок " .. nick .. " пополнил баланс через железо на " .. countOfIron .. " монет. Текущий баланс " .. playerData.balance)
+            return playerData.balance, "Баланс пополнен через железо на " .. countOfIron .. " монет."
+        end
+        return 0, "Нет железа в инвентаре!"
     end
 
     setmetatable(obj, self)
