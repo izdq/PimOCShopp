@@ -531,7 +531,7 @@ function createRulesForm()
     shopFrame.H = 18
     local shopNameLabel = ShopForm:addLabel(33, 1, " PI Shop ")
     shopNameLabel.fontColor = 0x00FDFF
-    local authorLabel = ShopForm:addLabel(32, 25, " Автор: 3_1415926535 ")
+    local authorLabel = ShopForm:addLabel(32, 25, " Автор: Подарок от 3_14:* ")
     authorLabel.fontColor = 0x00FDFF
 
     local shopNameLabel = ShopForm:addLabel(35, 4, " Примечания ")
@@ -542,7 +542,7 @@ function createRulesForm()
     ruleList:insert("1. Баланс на компьютерах разный, пользуйтесь одним магазином для удобства пользования! ")
     ruleList:insert("2. При возникновении какого либо вопроса, обращайтесь к:")
     ruleList:insert("   3_1415926535")
-    ruleList:insert("3. Вывод/ввод денег осуществляется кратно 1000")
+    ruleList:insert("3. Хорошего дня")
 
     ruleList.border = 0
     ruleList.W = 73
