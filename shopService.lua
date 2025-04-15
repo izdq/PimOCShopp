@@ -145,7 +145,7 @@ function ShopService:new(terminalName)
         printD(terminalName .. ": Игрок " .. nick .. " пополнил баланс на " .. countOfMoney .. " монет. Текущий баланс " .. playerData.balance)
         return playerData.balance, "Баланс пополнен на " .. countOfMoney .. " монет"
     end
-    return 0, "Недостаточно железных слитков в ME!"
+    return 0, "Недостаточно железных слитков в инвентаре!"
 end
 
     function obj:withdrawMoney(nick, count)
