@@ -108,12 +108,21 @@ function ShopService:new(terminalName)
     end
 
     function obj:getBalance(nick)
-        local playerData = self:getPlayerData(nick)
-        if (playerData) then
-            return playerData.balance
-        end
-        return 0
+       local playerDataList = self.db:select({
+        { column = "ID", value = nick, operation = "=" }
+    })
+    local playerData
+    if not next(playerDataList) then
+        playerData = {}
+        playerData.balance = 0
+        playerData.items = {}
+        self.db:insert(nick, playerData)
+    else
+        playerData = playerDataList[1]
     end
+    print("getPlayerData для " .. nick .. " возвращает баланс: " .. tostring(playerData.balance))
+    return playerData
+end
 
     function obj:getItemCount(nick)
         local playerData = self:getPlayerData(nick)
@@ -132,18 +141,18 @@ function ShopService:new(terminalName)
     end
 
     function obj:depositMoney(nick, count)
-        local countOfMoney = itemUtils.takeItem("minecraft:iron_ingot", 0, count)
-        if (countOfMoney > 0) then
-            local playerData = self:getPlayerData(nick)
-            print("Баланс до пополнения: " .. tostring(playerData.balance))
-            playerData.balance = playerData.balance + countOfMoney
-            print("Баланс после пополнения: " .. tostring(playerData.balance))
-            self.db:insert(nick, playerData)
-            printD(terminalName .. ": Игрок " .. nick .. " пополнил баланс на " .. countOfMoney .. " монет. Текущий баланс " .. playerData.balance)
-            return playerData.balance, "Баланс пополнен на " .. countOfMoney .. " монет"
-        end
-        return 0, "У тебя пустой карман(!)"
+    local countOfMoney = itemUtils.takeItem("minecraft:iron_ingot", 0, count)
+    if (countOfMoney > 0) then
+        local playerData = self:getPlayerData(nick)
+        print("Баланс до пополнения: " .. tostring(playerData.balance))
+        playerData.balance = playerData.balance + countOfMoney
+        print("Баланс после пополнения: " .. tostring(playerData.balance))
+        self.db:update(nick, playerData)  -- или insert, если update равен insert
+        printD(terminalName .. ": Игрок " .. nick .. " пополнил баланс на " .. countOfMoney .. " монет. Текущий баланс " .. playerData.balance)
+        return playerData.balance, "Баланс пополнен на " .. countOfMoney .. " монет"
     end
+    return 0, "У тебя пустой карман(!)"
+end
 
     function obj:withdrawMoney(nick, count)
         local playerData = self:getPlayerData(nick)
