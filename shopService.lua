@@ -131,35 +131,38 @@ function ShopService:new(terminalName)
     end
 
     function obj:depositMoney(nick, count)
-        local countOfMoney = itemUtils.takeMoney(count)
-        if (countOfMoney > 0) then
-            local playerData = self:getPlayerData(nick)
-            playerData.balance = playerData.balance + countOfMoney
-            self.db:insert(nick, playerData)
-            printD(terminalName .. ": Игрок " .. nick .. " пополнил баланс на " .. countOfMoney .. " Текущий баланс " .. playerData.balance)
-            return playerData.balance, "Баланс пополнен на " .. countOfMoney
-        end
-        return 0, "Нету монеток в инвентаре!"
-    end
-
-    function obj:withdrawMoney(nick, count)
+    -- Забираем заданное количество железных слитков из инвентаря
+    local countOfIngots = itemUtils.takeItem("iron_ingot", 0, count)
+    if (countOfIngots > 0) then
         local playerData = self:getPlayerData(nick)
-        if (playerData.balance < count) then
-            return 0, "Не хватает денег на счету"
-        end
-        local countOfMoney = itemUtils.giveMoney(count)
-        if (countOfMoney > 0) then
-            playerData.balance = playerData.balance - countOfMoney
-            self.db:insert(nick, playerData)
-            printD(terminalName .. ": Игрок " .. nick .. " снял с баланса " .. countOfMoney .. ". Текущий баланс " .. playerData.balance)
-            return countOfMoney, "C баланса списанно " .. countOfMoney
-        end
-        if (itemUtils.countOfAvailableSlots() > 0) then
-            return 0, "Нету монеток в магазине!"
-        else
-            return 0, "Освободите инвентарь!"
-        end
+        -- За каждый железный слиток начисляем 1 монету
+        playerData.balance = playerData.balance + countOfIngots
+        self.db:insert(nick, playerData)
+        printD(terminalName .. ": Игрок " .. nick .. " пополнил баланс через железные слитки на " .. countOfIngots .. " монет. Текущий баланс " .. playerData.balance)
+        return playerData.balance, "Баланс пополнен через железные слитки на " .. countOfIngots .. " монет."
     end
+    return 0, "Нету железных слитков в инвентаре!"
+end
+
+function obj:withdrawMoney(nick, count)
+    local playerData = self:getPlayerData(nick)
+    if (playerData.balance < count) then
+        return 0, "Не хватает денег на счету"
+    end
+    -- Выдаем игроку железные слитки вместо монет
+    local countOfIngots = itemUtils.giveItem("iron_ingot", 0, count)
+    if (countOfIngots > 0) then
+        playerData.balance = playerData.balance - countOfIngots
+        self.db:insert(nick, playerData)
+        printD(terminalName .. ": Игрок " .. nick .. " снял с баланса " .. countOfIngots .. " монет в виде железных слитков. Текущий баланс " .. playerData.balance)
+        return countOfIngots, "С баланса списано " .. countOfIngots .. " монет в виде железных слитков."
+    end
+    if (itemUtils.countOfAvailableSlots() > 0) then
+        return 0, "Нету железных слитков в магазине!"
+    else
+        return 0, "Освободите инвентарь!"
+    end
+end
 
     function obj:getPlayerData(nick)
         local playerDataList = self.db:select({
