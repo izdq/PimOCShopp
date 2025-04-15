@@ -16,7 +16,6 @@ end
 
 local function printD(...) end
 
-
 local function readObjectFromFile(path)
     local file, err = io.open(path, "r")
     if not file then
@@ -32,7 +31,7 @@ local function readObjectFromFile(path)
     end
   
     return obj
-  end
+end
 
 function ShopService:new(terminalName)
     local obj = {}
@@ -40,9 +39,10 @@ function ShopService:new(terminalName)
     function obj:init()
 
         self.telegramLoggers = {
-        telegramLog_buy = telegramLog_buy, 
-        telegramLog_sell = telegramLog_sell, 
-        telegramLog_OreExchange = telegramLog_OreExchange }
+            telegramLog_buy = telegramLog_buy, 
+            telegramLog_sell = telegramLog_sell, 
+            telegramLog_OreExchange = telegramLog_OreExchange 
+        }
 
         self.oreExchangeList = readObjectFromFile("/home/config/oreExchanger.cfg")
         self.exchangeList = readObjectFromFile("/home/config/exchanger.cfg")
@@ -82,12 +82,9 @@ function ShopService:new(terminalName)
         return self.oreExchangeList
     end
 
-
-
     function obj:getExchangeList()
         return self.exchangeList
     end
-
 
     function obj:getSellShopList(category)
         local categorySellShopList = {}
@@ -135,18 +132,18 @@ function ShopService:new(terminalName)
     end
 
     function obj:depositMoney(nick, count)
-    local countOfMoney = itemUtils.takeItem("minecraft:iron_ingot", 0, count)
-    if (countOfMoney > 0) then
-        local playerData = self:getPlayerData(nick)
-        print("Баланс до пополнения: " .. tostring(playerData.balance))
-        playerData.balance = playerData.balance + countOfMoney
-        print("Баланс после пополнения: " .. tostring(playerData.balance))
-        self.db:insert(nick, playerData)
-        printD(terminalName .. ": Игрок " .. nick .. " пополнил баланс на " .. countOfMoney .. " монет. Текущий баланс " .. playerData.balance)
-        return playerData.balance, "Баланс пополнен на " .. countOfMoney .. " монет"
+        local countOfMoney = itemUtils.takeItem("minecraft:iron_ingot", 0, count)
+        if (countOfMoney > 0) then
+            local playerData = self:getPlayerData(nick)
+            print("Баланс до пополнения: " .. tostring(playerData.balance))
+            playerData.balance = playerData.balance + countOfMoney
+            print("Баланс после пополнения: " .. tostring(playerData.balance))
+            self.db:insert(nick, playerData)
+            printD(terminalName .. ": Игрок " .. nick .. " пополнил баланс на " .. countOfMoney .. " монет. Текущий баланс " .. playerData.balance)
+            return playerData.balance, "Баланс пополнен на " .. countOfMoney .. " монет"
+        end
+        return 0, "У тебя пустой карман(!)"
     end
-    return 0, "У тебя пустой карман(!"
-end
 
     function obj:withdrawMoney(nick, count)
         local playerData = self:getPlayerData(nick)
@@ -220,7 +217,6 @@ end
         end
         return itemsCount, "Куплено " .. itemsCount .. " предметов!"
     end
-
 
     function obj:buyItem(nick, itemCfg, count)
         local playerData = self:getPlayerData(nick)
